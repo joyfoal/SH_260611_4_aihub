@@ -17,6 +17,7 @@
     --card-bg: #1e2235;
     --danger: #ef4444;
     --success: #22c55e;
+    --warn: #f59e0b;
     --top-h: 60px;
     --side-w: 200px;
   }
@@ -30,10 +31,26 @@
     min-height: 100vh;
   }
 
+  /* ── ADMIN BANNER ── */
+  #admin-banner {
+    display: none;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 28px;
+    background: linear-gradient(90deg, #7c3aed, #f59e0b);
+    color: #fff;
+    font-size: .75rem; font-weight: 700;
+    align-items: center; justify-content: center;
+    gap: 8px;
+    letter-spacing: .05em;
+  }
+  #admin-banner.on { display: flex; }
+  body.admin-mode { --top-h: 88px; }
+  body.admin-mode #topnav { top: 28px; }
+
   /* ── TOP NAV ── */
   #topnav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    height: var(--top-h);
+    height: 60px;
     background: rgba(15,17,23,.92);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
@@ -67,10 +84,7 @@
     transition: all .2s;
   }
   .cat-tab:hover { color: var(--text); background: var(--bg3); }
-  .cat-tab.active {
-    background: var(--accent);
-    color: #fff;
-  }
+  .cat-tab.active { background: var(--accent); color: #fff; }
 
   .top-actions {
     padding: 0 16px;
@@ -87,6 +101,31 @@
     transition: all .2s;
   }
   .btn-icon:hover { color: var(--text); border-color: var(--accent); }
+  .btn-icon.admin-on {
+    background: rgba(245,158,11,.2);
+    border-color: var(--warn);
+    color: var(--warn);
+  }
+
+  /* Admin-only elements hidden by default */
+  .admin-only { display: none !important; }
+  body.admin-mode .admin-only { display: flex !important; }
+  body.admin-mode .admin-only-block { display: block !important; }
+  .admin-only-block { display: none !important; }
+
+  /* ── EXPORT BTN ── */
+  #export-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--warn);
+    background: rgba(245,158,11,.15);
+    color: var(--warn);
+    font-size: .8rem; font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all .2s;
+  }
+  #export-btn:hover { background: rgba(245,158,11,.3); }
 
   /* ── LAYOUT ── */
   #layout {
@@ -150,17 +189,10 @@
     margin-bottom: 20px;
   }
 
-  .section-title {
-    font-size: 1.1rem; font-weight: 700;
-    color: var(--text);
-  }
-  .section-count {
-    font-size: .8rem;
-    color: var(--text2);
-    margin-left: 8px;
-  }
+  .section-title { font-size: 1.1rem; font-weight: 700; color: var(--text); }
+  .section-count { font-size: .8rem; color: var(--text2); margin-left: 8px; }
 
-  /* ── CARDS GRID ── */
+  /* ── CARDS ── */
   #cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -174,57 +206,34 @@
     padding: 20px;
     display: flex; flex-direction: column; gap: 10px;
     transition: transform .2s, border-color .2s, box-shadow .2s;
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
   }
   .card::before {
     content: '';
     position: absolute; top: 0; left: 0; right: 0; height: 3px;
     background: var(--accent);
-    opacity: 0;
-    transition: opacity .2s;
+    opacity: 0; transition: opacity .2s;
   }
-  .card:hover {
-    transform: translateY(-3px);
-    border-color: var(--accent);
-    box-shadow: 0 8px 30px rgba(108,99,255,.2);
-  }
+  .card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 8px 30px rgba(108,99,255,.2); }
   .card:hover::before { opacity: 1; }
 
-  .card-top {
-    display: flex; align-items: center; gap: 12px;
-  }
+  .card-top { display: flex; align-items: center; gap: 12px; }
   .card-icon {
     width: 44px; height: 44px; border-radius: 12px;
     background: var(--bg3);
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem;
-    flex-shrink: 0;
+    font-size: 1.4rem; flex-shrink: 0;
   }
-  .card-name {
-    font-weight: 700; font-size: .95rem;
-    color: var(--text);
-  }
-  .card-sub {
-    font-size: .75rem; color: var(--text2);
-    margin-top: 2px;
-  }
-  .card-desc {
-    font-size: .8rem; color: var(--text2);
-    line-height: 1.5;
-    flex: 1;
-  }
-  .card-footer {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-top: 4px;
-  }
+  .card-name { font-weight: 700; font-size: .95rem; color: var(--text); }
+  .card-sub { font-size: .75rem; color: var(--text2); margin-top: 2px; }
+  .card-desc { font-size: .8rem; color: var(--text2); line-height: 1.5; flex: 1; }
+  .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+
   .card-link {
     display: inline-flex; align-items: center; gap: 5px;
     padding: 6px 14px;
-    background: var(--accent);
-    color: #fff;
-    border-radius: 20px;
-    text-decoration: none;
+    background: var(--accent); color: #fff;
+    border-radius: 20px; text-decoration: none;
     font-size: .78rem; font-weight: 600;
     transition: background .2s;
   }
@@ -232,8 +241,7 @@
 
   .card-actions {
     display: flex; gap: 6px;
-    opacity: 0;
-    transition: opacity .2s;
+    opacity: 0; transition: opacity .2s;
   }
   .card:hover .card-actions { opacity: 1; }
 
@@ -243,206 +251,166 @@
     display: flex; align-items: center; justify-content: center;
     font-size: .8rem; cursor: pointer;
     transition: all .2s;
-    background: var(--bg2);
-    color: var(--text2);
+    background: var(--bg2); color: var(--text2);
   }
   .btn-del:hover { background: var(--danger); border-color: var(--danger); color: #fff; }
   .btn-edit:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-  .badge {
-    font-size: .68rem; padding: 2px 8px;
-    border-radius: 10px;
-    background: rgba(108,99,255,.18);
-    color: var(--accent2);
-    font-weight: 600;
-  }
-
   /* ── EMPTY STATE ── */
   .empty-state {
-    grid-column: 1/-1;
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text2);
+    grid-column: 1/-1; text-align: center;
+    padding: 60px 20px; color: var(--text2);
   }
   .empty-state .icon { font-size: 2.5rem; margin-bottom: 12px; }
-  .empty-state p { font-size: .9rem; }
 
   /* ── FAB ── */
   #fab {
     position: fixed; right: 28px; bottom: 28px;
     width: 52px; height: 52px; border-radius: 50%;
-    background: var(--accent);
-    color: #fff;
-    font-size: 1.5rem; font-weight: 300;
-    border: none; cursor: pointer;
+    background: var(--accent); color: #fff;
+    font-size: 1.5rem; border: none; cursor: pointer;
     box-shadow: 0 4px 20px rgba(108,99,255,.5);
-    display: flex; align-items: center; justify-content: center;
+    display: none; align-items: center; justify-content: center;
     transition: transform .2s, box-shadow .2s;
     z-index: 200;
   }
-  #fab:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 30px rgba(108,99,255,.7);
-  }
+  body.admin-mode #fab { display: flex; }
+  #fab:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(108,99,255,.7); }
 
   /* ── MODAL ── */
   .overlay {
-    display: none;
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,.7);
-    backdrop-filter: blur(4px);
-    z-index: 300;
-    align-items: center;
-    justify-content: center;
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
+    z-index: 300; align-items: center; justify-content: center;
   }
   .overlay.open { display: flex; }
 
   .modal {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 28px;
-    width: 100%;
-    max-width: 480px;
-    max-height: 90vh;
-    overflow-y: auto;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 18px; padding: 28px;
+    width: 100%; max-width: 480px;
+    max-height: 90vh; overflow-y: auto;
   }
+  .modal h2 { font-size: 1.1rem; margin-bottom: 20px; color: var(--text); }
 
-  .modal h2 {
-    font-size: 1.1rem; margin-bottom: 20px;
-    color: var(--text);
-  }
-
-  .form-grid {
-    display: grid; gap: 14px;
-  }
-  .form-row {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-  }
+  .form-grid { display: grid; gap: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
   .field label {
-    display: block;
-    font-size: .78rem; color: var(--text2);
+    display: block; font-size: .78rem; color: var(--text2);
     margin-bottom: 5px; font-weight: 600;
   }
   .field input, .field select, .field textarea {
-    width: 100%;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    padding: 9px 12px;
-    font-size: .87rem;
-    font-family: inherit;
-    transition: border-color .2s;
-    outline: none;
+    width: 100%; background: var(--bg3);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); padding: 9px 12px;
+    font-size: .87rem; font-family: inherit;
+    transition: border-color .2s; outline: none;
   }
-  .field input:focus, .field select:focus, .field textarea:focus {
-    border-color: var(--accent);
-  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
   .field textarea { resize: vertical; min-height: 72px; }
   .field select option { background: var(--bg2); }
 
   .modal-footer {
-    display: flex; gap: 10px; justify-content: flex-end;
-    margin-top: 20px;
+    display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;
   }
   .btn {
-    padding: 9px 22px;
-    border-radius: 8px;
+    padding: 9px 22px; border-radius: 8px;
     font-size: .88rem; font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition: all .2s;
+    cursor: pointer; border: none; transition: all .2s;
   }
   .btn-primary { background: var(--accent); color: #fff; }
   .btn-primary:hover { background: var(--accent2); }
-  .btn-ghost {
-    background: transparent; color: var(--text2);
-    border: 1px solid var(--border);
-  }
+  .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
   .btn-ghost:hover { color: var(--text); border-color: var(--text2); }
 
-  /* ── CONFIRM DIALOG ── */
+  /* ── CONFIRM ── */
   #confirm-box {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 24px 28px;
-    text-align: center;
-    max-width: 320px;
-    width: 100%;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 14px; padding: 24px 28px;
+    text-align: center; max-width: 320px; width: 100%;
   }
   #confirm-box p { margin-bottom: 18px; color: var(--text2); font-size: .9rem; }
   #confirm-box strong { color: var(--text); display: block; margin-bottom: 4px; }
 
-  /* ── CAT MANAGE MODAL ── */
+  /* ── CAT MANAGE ── */
   #cat-list { margin: 12px 0; display: flex; flex-direction: column; gap: 8px; }
   .cat-item {
     display: flex; align-items: center; gap: 8px;
-    background: var(--bg3);
-    border-radius: 8px;
-    padding: 8px 12px;
-    border: 1px solid var(--border);
+    background: var(--bg3); border-radius: 8px;
+    padding: 8px 12px; border: 1px solid var(--border);
   }
   .cat-item span { flex: 1; font-size: .88rem; }
-  .sub-list {
-    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px;
-  }
+  .sub-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
   .sub-chip {
     font-size: .75rem; padding: 3px 10px;
     background: var(--bg3); border-radius: 12px;
-    border: 1px solid var(--border);
-    color: var(--text2);
+    border: 1px solid var(--border); color: var(--text2);
     display: flex; align-items: center; gap: 5px;
-    cursor: default;
   }
   .sub-chip button {
     background: none; border: none; cursor: pointer;
-    color: var(--text2); font-size: .7rem; line-height: 1;
-    padding: 0; transition: color .15s;
+    color: var(--text2); font-size: .7rem; padding: 0;
+    transition: color .15s;
   }
   .sub-chip button:hover { color: var(--danger); }
 
-  /* ── SEARCH BAR ── */
-  #search-wrap {
-    position: relative; max-width: 320px;
+  /* ── PW CHANGE ── */
+  .divider {
+    border: none; border-top: 1px solid var(--border);
+    margin: 18px 0;
   }
+  .pw-section h3 {
+    font-size: .88rem; color: var(--text2);
+    margin-bottom: 10px; font-weight: 600;
+  }
+  .pw-row { display: flex; gap: 8px; align-items: center; }
+  .pw-row input {
+    flex: 1; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); padding: 8px 12px;
+    font-size: .85rem; outline: none;
+  }
+  .pw-row input:focus { border-color: var(--accent); }
+
+  /* ── SEARCH ── */
+  #search-wrap { position: relative; max-width: 320px; }
   #search {
-    width: 100%;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    color: var(--text);
-    padding: 7px 14px 7px 36px;
-    font-size: .85rem;
-    outline: none;
-    transition: border-color .2s;
+    width: 100%; background: var(--bg3);
+    border: 1px solid var(--border); border-radius: 20px;
+    color: var(--text); padding: 7px 14px 7px 36px;
+    font-size: .85rem; outline: none; transition: border-color .2s;
   }
   #search:focus { border-color: var(--accent); }
   #search-wrap::before {
-    content: '🔍';
-    position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
-    font-size: .8rem; pointer-events: none;
+    content: '🔍'; position: absolute; left: 11px; top: 50%;
+    transform: translateY(-50%); font-size: .8rem; pointer-events: none;
   }
 
   /* ── TOAST ── */
   #toast {
     position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: .85rem;
-    z-index: 999;
-    opacity: 0;
-    transition: opacity .3s;
-    pointer-events: none;
+    background: var(--bg2); border: 1px solid var(--border);
+    color: var(--text); padding: 10px 20px;
+    border-radius: 20px; font-size: .85rem;
+    z-index: 999; opacity: 0; transition: opacity .3s; pointer-events: none;
   }
   #toast.show { opacity: 1; }
 
-  /* ── SCROLLBAR ── */
+  /* ── VISITOR COUNTER ── */
+  #visitor-chip {
+    display: flex; align-items: center; gap: 5px;
+    padding: 4px 12px;
+    background: rgba(108,99,255,.12);
+    border: 1px solid rgba(108,99,255,.3);
+    border-radius: 20px;
+    font-size: .75rem; color: var(--accent2);
+    white-space: nowrap; flex-shrink: 0;
+    margin-left: 4px;
+  }
+  #visitor-chip .v-icon { font-size: .85rem; }
+  #v-count { font-weight: 700; }
+  #v-count.loading { opacity: .4; }
+
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
@@ -457,13 +425,25 @@
 </head>
 <body>
 
+<!-- ADMIN BANNER -->
+<div id="admin-banner">🔓 관리자 모드 활성화 — 편집 후 반드시 [💾 내보내기]로 저장하세요</div>
+
 <!-- TOP NAV -->
 <nav id="topnav">
   <div class="brand">⚡ AI Hub</div>
+  <div id="visitor-chip" title="누적 방문자 수">
+    <span class="v-icon">👁</span>
+    <span id="v-count" class="loading">···</span>
+    <span>명</span>
+  </div>
   <div id="cat-tabs"></div>
   <div class="top-actions">
     <div id="search-wrap"><input id="search" placeholder="검색..." /></div>
-    <button class="btn-icon" title="카테고리 관리" onclick="openCatModal()">⚙️</button>
+    <!-- 관리자만 노출 -->
+    <button id="export-btn" class="admin-only" onclick="exportHTML()">💾 내보내기</button>
+    <button class="btn-icon admin-only" title="카테고리 관리" onclick="openCatModal()">⚙️</button>
+    <!-- 항상 노출 -->
+    <button class="btn-icon" id="admin-btn" title="관리자 로그인" onclick="toggleAdmin()">🔒</button>
   </div>
 </nav>
 
@@ -481,7 +461,7 @@
   </main>
 </div>
 
-<!-- FAB -->
+<!-- FAB (관리자만) -->
 <button id="fab" onclick="openAddModal()" title="사이트 추가">+</button>
 
 <!-- TOAST -->
@@ -549,6 +529,16 @@
       <button class="btn btn-primary" onclick="addCategory()">추가</button>
     </div>
     <div id="cat-list"></div>
+
+    <hr class="divider">
+    <div class="pw-section">
+      <h3>🔑 관리자 비밀번호 변경</h3>
+      <div class="pw-row">
+        <input type="password" id="new-pw" placeholder="새 비밀번호" />
+        <button class="btn btn-primary" onclick="changePassword()">변경</button>
+      </div>
+    </div>
+
     <div class="modal-footer">
       <button class="btn btn-primary" onclick="closeModal('cat-overlay')">완료</button>
     </div>
@@ -556,90 +546,143 @@
 </div>
 
 <script>
-// ── DEFAULT DATA ──
+// ── DEFAULT DATA (관리자 내보내기 시 이 블록이 교체됨) ──
+// CATS_START
 const DEFAULT_CATS = [
-  {
-    id: 'ai-assistant', name: '🤖 AI 어시스턴트',
-    subs: ['전체', '대화형 AI', '검색형 AI']
-  },
-  {
-    id: 'ai-devtool', name: '🛠️ AI 개발도구',
-    subs: ['전체', '코드 생성', '모델/데이터셋']
-  },
-  {
-    id: 'ai-creative', name: '🎨 AI 크리에이티브',
-    subs: ['전체', '이미지 생성', '음악 생성']
-  },
-  {
-    id: 'video', name: '🎬 영상 제작',
-    subs: ['전체', '영상 생성', '편집 도구', '유튜브 제작']
-  }
+  { id: 'ai-assistant', name: '🤖 AI 어시스턴트', subs: ['전체', '대화형 AI', '검색형 AI'] },
+  { id: 'ai-devtool',   name: '🛠️ AI 개발도구',   subs: ['전체', '코드 생성', '모델/데이터셋'] },
+  { id: 'ai-creative',  name: '🎨 AI 크리에이티브', subs: ['전체', '이미지 생성', '음악 생성'] },
+  { id: 'video',        name: '🎬 영상 제작',       subs: ['전체', '영상 생성', '편집 도구', '유튜브 제작'] }
 ];
+// CATS_END
 
+// SITES_START
 const DEFAULT_SITES = [
   // AI 어시스턴트
-  { id: s(), icon:'🧠', name:'Claude', url:'https://claude.ai', cat:'ai-assistant', sub:'대화형 AI', desc:'Anthropic의 AI 어시스턴트. 코딩, 분석, 글쓰기에 탁월.' },
-  { id: s(), icon:'✨', name:'Gemini', url:'https://gemini.google.com', cat:'ai-assistant', sub:'대화형 AI', desc:'Google의 멀티모달 AI. 이미지·문서 분석 지원.' },
-  { id: s(), icon:'🔥', name:'Grok', url:'https://grok.x.ai', cat:'ai-assistant', sub:'대화형 AI', desc:'xAI의 실시간 정보 기반 AI 챗봇.' },
-  { id: s(), icon:'⚡', name:'Genspark', url:'https://www.genspark.ai', cat:'ai-assistant', sub:'검색형 AI', desc:'AI 기반 스마트 검색 및 요약 엔진.' },
-  { id: s(), icon:'💬', name:'ChatGPT', url:'https://chat.openai.com', cat:'ai-assistant', sub:'대화형 AI', desc:'OpenAI의 범용 AI 어시스턴트.' },
-  { id: s(), icon:'🔍', name:'Perplexity', url:'https://www.perplexity.ai', cat:'ai-assistant', sub:'검색형 AI', desc:'출처 기반 AI 검색 엔진.' },
-
+  { id:'_s001', icon:'🧠', name:'Claude',      url:'https://claude.ai',                           cat:'ai-assistant', sub:'대화형 AI', desc:'Anthropic의 AI 어시스턴트. 코딩, 분석, 글쓰기에 탁월.' },
+  { id:'_s002', icon:'✨', name:'Gemini',      url:'https://gemini.google.com',                   cat:'ai-assistant', sub:'대화형 AI', desc:'Google의 멀티모달 AI. 이미지·문서 분석 지원.' },
+  { id:'_s003', icon:'🔥', name:'Grok',        url:'https://grok.x.ai',                           cat:'ai-assistant', sub:'대화형 AI', desc:'xAI의 실시간 정보 기반 AI 챗봇.' },
+  { id:'_s004', icon:'⚡', name:'Genspark',    url:'https://www.genspark.ai',                     cat:'ai-assistant', sub:'검색형 AI', desc:'AI 기반 스마트 검색 및 요약 엔진.' },
+  { id:'_s005', icon:'💬', name:'ChatGPT',     url:'https://chat.openai.com',                     cat:'ai-assistant', sub:'대화형 AI', desc:'OpenAI의 범용 AI 어시스턴트.' },
+  { id:'_s006', icon:'🔍', name:'Perplexity',  url:'https://www.perplexity.ai',                   cat:'ai-assistant', sub:'검색형 AI', desc:'출처 기반 AI 검색 엔진.' },
   // AI 개발도구
-  { id: s(), icon:'💜', name:'Lovable', url:'https://lovable.dev', cat:'ai-devtool', sub:'코드 생성', desc:'AI로 풀스택 앱을 자동 생성. 배포까지 원클릭.' },
-  { id: s(), icon:'▲', name:'V0', url:'https://v0.dev', cat:'ai-devtool', sub:'코드 생성', desc:'Vercel의 UI 생성 AI. React 컴포넌트를 자동 제작.' },
-  { id: s(), icon:'🤗', name:'Hugging Face', url:'https://huggingface.co', cat:'ai-devtool', sub:'모델/데이터셋', desc:'AI 모델·데이터셋·스페이스를 공유하는 허브.' },
-  { id: s(), icon:'🐙', name:'GitHub', url:'https://github.com', cat:'ai-devtool', sub:'모델/데이터셋', desc:'세계 최대 코드 협업 플랫폼. Copilot 내장.' },
-  { id: s(), icon:'🌊', name:'Bolt', url:'https://bolt.new', cat:'ai-devtool', sub:'코드 생성', desc:'브라우저에서 AI로 앱을 즉시 생성·실행.' },
-
+  { id:'_s007', icon:'💜', name:'Lovable',     url:'https://lovable.dev',                         cat:'ai-devtool',   sub:'코드 생성',    desc:'AI로 풀스택 앱을 자동 생성. 배포까지 원클릭.' },
+  { id:'_s008', icon:'▲',  name:'V0',          url:'https://v0.dev',                              cat:'ai-devtool',   sub:'코드 생성',    desc:'Vercel의 UI 생성 AI. React 컴포넌트를 자동 제작.' },
+  { id:'_s009', icon:'🤗', name:'Hugging Face',url:'https://huggingface.co',                      cat:'ai-devtool',   sub:'모델/데이터셋', desc:'AI 모델·데이터셋·스페이스를 공유하는 허브.' },
+  { id:'_s010', icon:'🐙', name:'GitHub',      url:'https://github.com',                          cat:'ai-devtool',   sub:'모델/데이터셋', desc:'세계 최대 코드 협업 플랫폼. Copilot 내장.' },
+  { id:'_s011', icon:'🌊', name:'Bolt',        url:'https://bolt.new',                            cat:'ai-devtool',   sub:'코드 생성',    desc:'브라우저에서 AI로 앱을 즉시 생성·실행.' },
   // AI 크리에이티브
-  { id: s(), icon:'🎨', name:'Whisk', url:'https://labs.google/fx/ko/tools/whisk', cat:'ai-creative', sub:'이미지 생성', desc:'Google의 이미지 합성 AI. 사진을 새로운 스타일로 변환.' },
-  { id: s(), icon:'🎵', name:'SUNO', url:'https://suno.ai', cat:'ai-creative', sub:'음악 생성', desc:'텍스트로 완성된 음악을 생성하는 AI 작곡 도구.' },
-  { id: s(), icon:'🖼️', name:'Midjourney', url:'https://midjourney.com', cat:'ai-creative', sub:'이미지 생성', desc:'프롬프트로 고품질 이미지를 생성하는 AI.' },
-  { id: s(), icon:'🎼', name:'Udio', url:'https://udio.com', cat:'ai-creative', sub:'음악 생성', desc:'고품질 AI 음악 생성. 다양한 장르 지원.' },
-  { id: s(), icon:'🌈', name:'Adobe Firefly', url:'https://firefly.adobe.com', cat:'ai-creative', sub:'이미지 생성', desc:'Adobe의 상업적 사용 가능한 AI 이미지 생성.' },
-
+  { id:'_s012', icon:'🎨', name:'Whisk',       url:'https://labs.google/fx/ko/tools/whisk',       cat:'ai-creative',  sub:'이미지 생성', desc:'Google의 이미지 합성 AI. 사진을 새로운 스타일로 변환.' },
+  { id:'_s013', icon:'🎵', name:'SUNO',        url:'https://suno.ai',                             cat:'ai-creative',  sub:'음악 생성',   desc:'텍스트로 완성된 음악을 생성하는 AI 작곡 도구.' },
+  { id:'_s014', icon:'🖼️', name:'Midjourney', url:'https://midjourney.com',                      cat:'ai-creative',  sub:'이미지 생성', desc:'프롬프트로 고품질 이미지를 생성하는 AI.' },
+  { id:'_s015', icon:'🎼', name:'Udio',        url:'https://udio.com',                            cat:'ai-creative',  sub:'음악 생성',   desc:'고품질 AI 음악 생성. 다양한 장르 지원.' },
+  { id:'_s016', icon:'🌈', name:'Adobe Firefly',url:'https://firefly.adobe.com',                  cat:'ai-creative',  sub:'이미지 생성', desc:'Adobe의 상업적 사용 가능한 AI 이미지 생성.' },
   // 영상 제작
-  { id: s(), icon:'🚀', name:'Runway ML', url:'https://runwayml.com', cat:'video', sub:'영상 생성', desc:'텍스트·이미지로 고품질 영상을 생성하는 AI.' },
-  { id: s(), icon:'🦋', name:'Pika', url:'https://pika.art', cat:'video', sub:'영상 생성', desc:'이미지나 텍스트를 영상으로 변환하는 AI 도구.' },
-  { id: s(), icon:'🎬', name:'Kling AI', url:'https://klingai.com', cat:'video', sub:'영상 생성', desc:'고품질 AI 영상 생성. 한국어 지원.' },
-  { id: s(), icon:'🧑‍💼', name:'HeyGen', url:'https://heygen.com', cat:'video', sub:'영상 생성', desc:'AI 아바타로 홍보·교육 영상을 자동 제작.' },
-  { id: s(), icon:'✂️', name:'CapCut', url:'https://capcut.com', cat:'video', sub:'편집 도구', desc:'AI 자동 편집·자막 생성 지원 영상 편집기.' },
-  { id: s(), icon:'🎞️', name:'InVideo AI', url:'https://invideo.io', cat:'video', sub:'유튜브 제작', desc:'스크립트만 입력하면 유튜브 영상을 자동 제작.' },
-  { id: s(), icon:'🎨', name:'Canva', url:'https://canva.com', cat:'video', sub:'편집 도구', desc:'썸네일·배너·영상 편집을 위한 디자인 플랫폼.' },
-  { id: s(), icon:'🖥️', name:'Synthesia', url:'https://synthesia.io', cat:'video', sub:'영상 생성', desc:'AI 발표자가 등장하는 영상을 텍스트로 생성.' },
-  { id: s(), icon:'🔊', name:'Descript', url:'https://descript.com', cat:'video', sub:'편집 도구', desc:'텍스트 편집 방식으로 음성·영상을 편집하는 AI.' },
-  { id: s(), icon:'📺', name:'TubeBuddy', url:'https://tubebuddy.com', cat:'video', sub:'유튜브 제작', desc:'유튜브 SEO·분석·최적화를 도와주는 브라우저 툴.' },
-  { id: s(), icon:'📊', name:'vidIQ', url:'https://vidiq.com', cat:'video', sub:'유튜브 제작', desc:'유튜브 키워드 분석과 채널 성장 전략 AI 도구.' },
+  { id:'_s017', icon:'🚀', name:'Runway ML',   url:'https://runwayml.com',                        cat:'video', sub:'영상 생성',   desc:'텍스트·이미지로 고품질 영상을 생성하는 AI.' },
+  { id:'_s018', icon:'🦋', name:'Pika',        url:'https://pika.art',                            cat:'video', sub:'영상 생성',   desc:'이미지나 텍스트를 영상으로 변환하는 AI 도구.' },
+  { id:'_s019', icon:'🎬', name:'Kling AI',    url:'https://klingai.com',                         cat:'video', sub:'영상 생성',   desc:'고품질 AI 영상 생성. 한국어 지원.' },
+  { id:'_s020', icon:'🧑‍💼',name:'HeyGen',    url:'https://heygen.com',                          cat:'video', sub:'영상 생성',   desc:'AI 아바타로 홍보·교육 영상을 자동 제작.' },
+  { id:'_s021', icon:'✂️', name:'CapCut',      url:'https://capcut.com',                          cat:'video', sub:'편집 도구',   desc:'AI 자동 편집·자막 생성 지원 영상 편집기.' },
+  { id:'_s022', icon:'🎞️', name:'InVideo AI', url:'https://invideo.io',                          cat:'video', sub:'유튜브 제작', desc:'스크립트만 입력하면 유튜브 영상을 자동 제작.' },
+  { id:'_s023', icon:'🎨', name:'Canva',       url:'https://canva.com',                           cat:'video', sub:'편집 도구',   desc:'썸네일·배너·영상 편집을 위한 디자인 플랫폼.' },
+  { id:'_s024', icon:'🖥️', name:'Synthesia',  url:'https://synthesia.io',                        cat:'video', sub:'영상 생성',   desc:'AI 발표자가 등장하는 영상을 텍스트로 생성.' },
+  { id:'_s025', icon:'🔊', name:'Descript',    url:'https://descript.com',                        cat:'video', sub:'편집 도구',   desc:'텍스트 편집 방식으로 음성·영상을 편집하는 AI.' },
+  { id:'_s026', icon:'📺', name:'TubeBuddy',   url:'https://tubebuddy.com',                       cat:'video', sub:'유튜브 제작', desc:'유튜브 SEO·분석·최적화를 도와주는 브라우저 툴.' },
+  { id:'_s027', icon:'📊', name:'vidIQ',       url:'https://vidiq.com',                           cat:'video', sub:'유튜브 제작', desc:'유튜브 키워드 분석과 채널 성장 전략 AI 도구.' },
 ];
+// SITES_END
 
-function s() { return '_' + Math.random().toString(36).slice(2,9); }
+// ADMIN_PW_START
+let ADMIN_PW = 'admin1234';
+// ADMIN_PW_END
 
 // ── STATE ──
-let cats = JSON.parse(localStorage.getItem('aihub_cats') || 'null') || DEFAULT_CATS;
-let sites = JSON.parse(localStorage.getItem('aihub_sites') || 'null') || DEFAULT_SITES;
+let cats = JSON.parse(JSON.stringify(DEFAULT_CATS));
+let sites = JSON.parse(JSON.stringify(DEFAULT_SITES));
 let activeCat = cats[0]?.id || '';
 let activeSub = '전체';
 let editingId = null;
 let deleteId = null;
 let searchQuery = '';
+let isAdmin = sessionStorage.getItem('aihub_admin') === '1';
 
-function save() {
-  localStorage.setItem('aihub_cats', JSON.stringify(cats));
-  localStorage.setItem('aihub_sites', JSON.stringify(sites));
+function uid() { return '_' + Math.random().toString(36).slice(2,9); }
+
+// ── ADMIN TOGGLE ──
+function toggleAdmin() {
+  if (isAdmin) {
+    isAdmin = false;
+    sessionStorage.removeItem('aihub_admin');
+    applyAdminUI();
+    toast('관리자 모드 해제');
+    return;
+  }
+  const pw = prompt('관리자 비밀번호를 입력하세요:');
+  if (pw === null) return;
+  if (pw === ADMIN_PW) {
+    isAdmin = true;
+    sessionStorage.setItem('aihub_admin', '1');
+    applyAdminUI();
+    toast('관리자 모드 활성화 ✅');
+  } else {
+    toast('비밀번호가 올바르지 않습니다.');
+  }
 }
 
-// ── RENDER TOP TABS ──
+function applyAdminUI() {
+  document.body.classList.toggle('admin-mode', isAdmin);
+  document.getElementById('admin-banner').classList.toggle('on', isAdmin);
+  const adminBtn = document.getElementById('admin-btn');
+  adminBtn.textContent = isAdmin ? '🔓' : '🔒';
+  adminBtn.title = isAdmin ? '관리자 로그아웃' : '관리자 로그인';
+  adminBtn.classList.toggle('admin-on', isAdmin);
+  // sidebar top offset
+  const sidebar = document.getElementById('sidebar');
+  sidebar.style.top = isAdmin ? '88px' : '60px';
+  sidebar.style.height = isAdmin ? 'calc(100vh - 88px)' : 'calc(100vh - 60px)';
+}
+
+// ── EXPORT ──
+function exportHTML() {
+  const catsJson = JSON.stringify(cats, null, 2)
+    .split('\n').map((l,i) => i===0 ? l : '  '+l).join('\n');
+  const sitesJson = JSON.stringify(sites, null, 2)
+    .split('\n').map((l,i) => i===0 ? l : '  '+l).join('\n');
+
+  const src = document.documentElement.outerHTML;
+
+  let out = src
+    .replace(
+      /\/\/ CATS_START[\s\S]*?\/\/ CATS_END/,
+      `// CATS_START\nconst DEFAULT_CATS = ${catsJson};\n// CATS_END`
+    )
+    .replace(
+      /\/\/ SITES_START[\s\S]*?\/\/ SITES_END/,
+      `// SITES_START\nconst DEFAULT_SITES = ${sitesJson};\n// SITES_END`
+    )
+    .replace(
+      /\/\/ ADMIN_PW_START[\s\S]*?\/\/ ADMIN_PW_END/,
+      `// ADMIN_PW_START\nlet ADMIN_PW = '${ADMIN_PW}';\n// ADMIN_PW_END`
+    );
+
+  const blob = new Blob([out], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'index.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('index.html 다운로드 완료! GitHub에 올려주세요 🚀');
+}
+
+// ── RENDER ──
 function renderTabs() {
   const el = document.getElementById('cat-tabs');
   el.innerHTML = '';
-  // 전체 탭
   const all = document.createElement('button');
   all.className = 'cat-tab' + (activeCat === '__all__' ? ' active' : '');
   all.textContent = '전체';
   all.onclick = () => { activeCat = '__all__'; activeSub = '전체'; render(); };
   el.appendChild(all);
-
   cats.forEach(c => {
     const btn = document.createElement('button');
     btn.className = 'cat-tab' + (activeCat === c.id ? ' active' : '');
@@ -649,19 +692,16 @@ function renderTabs() {
   });
 }
 
-// ── RENDER SIDEBAR ──
 function renderSidebar() {
   const el = document.getElementById('sidebar');
   el.innerHTML = '';
   if (activeCat === '__all__') return;
   const cat = cats.find(c => c.id === activeCat);
   if (!cat) return;
-
   const label = document.createElement('div');
   label.className = 'side-section-label';
   label.textContent = '소 카테고리';
   el.appendChild(label);
-
   const subs = ['전체', ...cat.subs.filter(s => s !== '전체')];
   subs.forEach(sub => {
     const btn = document.createElement('button');
@@ -672,11 +712,9 @@ function renderSidebar() {
   });
 }
 
-// ── RENDER CARDS ──
 function renderCards() {
   const el = document.getElementById('cards');
   el.innerHTML = '';
-
   let filtered = sites;
   if (activeCat !== '__all__') filtered = filtered.filter(s => s.cat === activeCat);
   if (activeSub !== '전체') filtered = filtered.filter(s => s.sub === activeSub);
@@ -688,16 +726,13 @@ function renderCards() {
       (s.sub||'').toLowerCase().includes(q)
     );
   }
-
   if (filtered.length === 0) {
-    el.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>사이트가 없습니다.<br>+ 버튼으로 추가해보세요!</p></div>`;
+    el.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>사이트가 없습니다.<br>${isAdmin ? '+ 버튼으로 추가해보세요!' : ''}</p></div>`;
     return;
   }
-
   filtered.forEach(site => {
     const card = document.createElement('div');
     card.className = 'card';
-    const catName = cats.find(c => c.id === site.cat)?.name || '';
     card.innerHTML = `
       <div class="card-top">
         <div class="card-icon">${site.icon || '🔗'}</div>
@@ -709,10 +744,11 @@ function renderCards() {
       <div class="card-desc">${esc(site.desc || '')}</div>
       <div class="card-footer">
         <a class="card-link" href="${esc(site.url)}" target="_blank" rel="noopener">방문 →</a>
+        ${isAdmin ? `
         <div class="card-actions">
           <button class="btn-edit" title="수정" onclick="openEditModal('${site.id}')">✏️</button>
           <button class="btn-del" title="삭제" onclick="askDelete('${site.id}')">🗑️</button>
-        </div>
+        </div>` : ''}
       </div>
     `;
     el.appendChild(card);
@@ -737,24 +773,17 @@ function updateHeader() {
   document.getElementById('section-count').textContent = `${filtered.length}개`;
 }
 
-function render() {
-  renderTabs();
-  renderSidebar();
-  renderCards();
-  updateHeader();
-}
+function render() { renderTabs(); renderSidebar(); renderCards(); updateHeader(); }
 
-// ── MODAL HELPERS ──
+// ── MODALS ──
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
 function openAddModal() {
+  if (!isAdmin) return;
   editingId = null;
   document.getElementById('modal-title').textContent = '➕ 사이트 추가';
-  document.getElementById('f-icon').value = '';
-  document.getElementById('f-name').value = '';
-  document.getElementById('f-url').value = '';
-  document.getElementById('f-desc').value = '';
+  ['f-icon','f-name','f-url','f-desc'].forEach(id => document.getElementById(id).value = '');
   populateCatSelect();
   if (activeCat !== '__all__') {
     document.getElementById('f-cat').value = activeCat;
@@ -766,6 +795,7 @@ function openAddModal() {
 }
 
 function openEditModal(id) {
+  if (!isAdmin) return;
   const site = sites.find(s => s.id === id);
   if (!site) return;
   editingId = id;
@@ -796,8 +826,7 @@ function updateSubSelect(selectedSub) {
   const cat = cats.find(c => c.id === catId);
   const sel = document.getElementById('f-sub');
   sel.innerHTML = '';
-  const subs = cat ? cat.subs.filter(s => s !== '전체') : [];
-  subs.forEach(sub => {
+  (cat ? cat.subs.filter(s => s !== '전체') : []).forEach(sub => {
     const opt = document.createElement('option');
     opt.value = sub; opt.textContent = sub;
     if (selectedSub && sub === selectedSub) opt.selected = true;
@@ -807,49 +836,43 @@ function updateSubSelect(selectedSub) {
 
 function saveSite() {
   const name = document.getElementById('f-name').value.trim();
-  const url = document.getElementById('f-url').value.trim();
-  const cat = document.getElementById('f-cat').value;
-  const sub = document.getElementById('f-sub').value;
+  const url  = document.getElementById('f-url').value.trim();
+  const cat  = document.getElementById('f-cat').value;
+  const sub  = document.getElementById('f-sub').value;
   if (!name || !url || !cat || !sub) { toast('필수 항목을 입력해주세요.'); return; }
-
   const site = {
-    id: editingId || s(),
+    id: editingId || uid(),
     icon: document.getElementById('f-icon').value.trim() || '🔗',
     name, url, cat, sub,
     desc: document.getElementById('f-desc').value.trim()
   };
-
   if (editingId) {
     const idx = sites.findIndex(s => s.id === editingId);
     if (idx !== -1) sites[idx] = site;
-    toast('수정되었습니다.');
+    toast('수정되었습니다. 내보내기로 저장하세요.');
   } else {
     sites.push(site);
-    toast('추가되었습니다.');
+    toast('추가되었습니다. 내보내기로 저장하세요.');
   }
-
-  save(); closeModal('site-overlay'); render();
+  closeModal('site-overlay'); render();
 }
 
 // ── DELETE ──
 function askDelete(id) {
+  if (!isAdmin) return;
   deleteId = id;
   const site = sites.find(s => s.id === id);
   document.getElementById('confirm-name').textContent = site?.name || '';
   openModal('confirm-overlay');
 }
-
 function confirmDelete() {
   sites = sites.filter(s => s.id !== deleteId);
-  save(); closeModal('confirm-overlay'); render();
-  toast('삭제되었습니다.');
+  closeModal('confirm-overlay'); render();
+  toast('삭제되었습니다. 내보내기로 저장하세요.');
 }
 
 // ── CATEGORY MANAGE ──
-function openCatModal() {
-  renderCatList();
-  openModal('cat-overlay');
-}
+function openCatModal() { if (!isAdmin) return; renderCatList(); openModal('cat-overlay'); }
 
 function renderCatList() {
   const el = document.getElementById('cat-list');
@@ -860,17 +883,16 @@ function renderCatList() {
     div.innerHTML = `
       <div class="cat-item">
         <span>${cat.name}</span>
-        <button class="btn-del" style="opacity:1" title="삭제" onclick="deleteCat('${cat.id}')">🗑️</button>
+        <button class="btn-del" style="opacity:1" onclick="deleteCat('${cat.id}')">🗑️</button>
       </div>
       <div class="side-section-label" style="margin-top:6px">소 카테고리</div>
-      <div class="sub-list" id="subs-${cat.id}">
-        ${cat.subs.filter(s=>s!=='전체').map(sub => `
+      <div class="sub-list">
+        ${cat.subs.filter(s=>s!=='전체').map(sub=>`
           <span class="sub-chip">${esc(sub)}
             <button onclick="deleteSub('${cat.id}','${esc(sub)}')">✕</button>
           </span>`).join('')}
         <span class="sub-chip" style="cursor:pointer;background:rgba(108,99,255,.15);color:var(--accent2)" onclick="promptAddSub('${cat.id}')">+ 추가</span>
-      </div>
-    `;
+      </div>`;
     el.appendChild(div);
   });
 }
@@ -879,10 +901,9 @@ function addCategory() {
   const input = document.getElementById('new-cat-name');
   const name = input.value.trim();
   if (!name) return;
-  const id = '_cat' + Date.now();
-  cats.push({ id, name, subs: [] });
+  cats.push({ id: '_cat' + Date.now(), name, subs: [] });
   input.value = '';
-  save(); render(); renderCatList();
+  render(); renderCatList();
   toast('카테고리가 추가되었습니다.');
 }
 
@@ -891,25 +912,34 @@ function deleteCat(id) {
   cats = cats.filter(c => c.id !== id);
   sites = sites.filter(s => s.cat !== id);
   if (activeCat === id) { activeCat = cats[0]?.id || '__all__'; activeSub = '전체'; }
-  save(); render(); renderCatList();
+  render(); renderCatList();
   toast('카테고리가 삭제되었습니다.');
 }
 
 function promptAddSub(catId) {
   const name = prompt('새 소 카테고리 이름:');
-  if (!name || !name.trim()) return;
+  if (!name?.trim()) return;
   const cat = cats.find(c => c.id === catId);
   if (!cat || cat.subs.includes(name.trim())) return;
   cat.subs.push(name.trim());
-  save(); render(); renderCatList();
+  render(); renderCatList();
 }
 
 function deleteSub(catId, sub) {
   const cat = cats.find(c => c.id === catId);
   if (!cat) return;
   cat.subs = cat.subs.filter(s => s !== sub);
-  sites.forEach(site => { if (site.cat === catId && site.sub === sub) site.sub = cat.subs[0] || ''; });
-  save(); render(); renderCatList();
+  render(); renderCatList();
+}
+
+// ── PASSWORD CHANGE ──
+function changePassword() {
+  const newPw = document.getElementById('new-pw').value.trim();
+  if (!newPw) { toast('새 비밀번호를 입력하세요.'); return; }
+  if (newPw.length < 4) { toast('비밀번호는 4자 이상이어야 합니다.'); return; }
+  ADMIN_PW = newPw;
+  document.getElementById('new-pw').value = '';
+  toast('비밀번호가 변경되었습니다. 내보내기로 저장하세요.');
 }
 
 // ── SEARCH ──
@@ -918,14 +948,10 @@ document.getElementById('search').addEventListener('input', e => {
   renderCards(); updateHeader();
 });
 
-// ── CLOSE ON OVERLAY CLICK ──
+// ── CLOSE ON OVERLAY CLICK / ESC ──
 ['site-overlay','confirm-overlay','cat-overlay'].forEach(id => {
-  document.getElementById(id).addEventListener('click', e => {
-    if (e.target.id === id) closeModal(id);
-  });
+  document.getElementById(id).addEventListener('click', e => { if (e.target.id === id) closeModal(id); });
 });
-
-// ── ESC KEY ──
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') ['site-overlay','confirm-overlay','cat-overlay'].forEach(closeModal);
 });
@@ -937,16 +963,34 @@ function toast(msg) {
   el.textContent = msg;
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
 }
 
-// ── ESCAPE ──
 function esc(str) {
   return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ── VISITOR COUNTER ──
+async function loadVisitorCount() {
+  const el = document.getElementById('v-count');
+  try {
+    const res = await fetch('https://api.counterapi.dev/v1/joyfoal-aihub/visitors/up', { cache: 'no-store' });
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    const n = data.count ?? data.value ?? 0;
+    el.textContent = n.toLocaleString('ko-KR');
+    el.classList.remove('loading');
+  } catch {
+    // 실패 시 hits.seeyoufarm.com 배지로 폴백
+    el.textContent = '—';
+    el.classList.remove('loading');
+  }
+}
+
 // ── INIT ──
+applyAdminUI();
 render();
+loadVisitorCount();
 </script>
 </body>
 </html>
